@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>monero</name>
+	<displayName><![CDATA[Monero Payments]]></displayName>
+	<version><![CDATA[0.1]]></version>
+	<description><![CDATA[Module for accepting payments by Monero]]></description>
+	<author><![CDATA[SerHack]]></author>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Are you sure you want to uninstall?]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>
