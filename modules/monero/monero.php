@@ -11,7 +11,7 @@ class monero extends PaymentModule{
         private $_html = '';
         private $_postErrors = array();
         
-        function __construct(){
+        public function __construct(){
         
                 $this->name = "monero";
                 $this->tab = 'payments_gateways';
