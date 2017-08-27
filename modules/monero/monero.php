@@ -53,6 +53,7 @@ class monero extends PaymentModule{
             if (Tools::isSubmit('submit'.$this->name))
     {
         $my_module_name = strval(Tools::getValue('MONERO_ADDRESS'));
+	$monero_wallet = strval(Tools::getvalue('MONERO_WALLET'));
         if (!$my_module_name
           || empty($my_module_name)
           || !Validate::isGenericName($my_module_name))
@@ -60,6 +61,7 @@ class monero extends PaymentModule{
         else
         {
             Configuration::updateValue('MONERO_ADDRESS', $my_module_name);
+	    Configuration::updateValue('MONERO_WALLET', $monero_wallet);
             $output .= $this->displayConfirmation($this->l('Settings updated'));
         }
     }
@@ -84,6 +86,12 @@ class monero extends PaymentModule{
                 'name' => 'MONERO_ADDRESS',
                 'size' => 20,
                 'required' => true
+            ),
+		array(
+            	'type' => 'text',
+            	'label' => $this->l('Monero Wallet RPC IP'),
+            	'name' => 'MONERO_WALLET',
+            	'required' => false
             )
         ),
         'submit' => array(
@@ -124,6 +132,7 @@ class monero extends PaymentModule{
      
     // Load current value
     $helper->fields_value['MONERO_ADDRESS'] = Configuration::get('MONERO_ADDRESS');
+    $helper->fields_value['MONERO_WALLET'] = Configuration::get('MONERO_WALLET');
      
     return $helper->generateForm($fields_form);
 }
