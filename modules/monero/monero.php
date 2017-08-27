@@ -15,7 +15,7 @@ class monero extends PaymentModule{
         
                 $this->name = "monero";
                 $this->tab = 'payments_gateways';
-                $this->version = '0.1';
+                $this->version = '1.0';
                 $this->author = 'SerHack';
                 $this->need_instance = 1;
                 $this->bootstrap = true;
