@@ -2,7 +2,7 @@
 <module>
 	<name>monero</name>
 	<displayName><![CDATA[Monero Payments]]></displayName>
-	<version><![CDATA[0.1]]></version>
+	<version><![CDATA[1.0]]></version>
 	<description><![CDATA[Module for accepting payments by Monero]]></description>
 	<author><![CDATA[SerHack]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
