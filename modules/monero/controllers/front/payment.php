@@ -14,7 +14,6 @@ Here there will be:
 - ADDRESS
 - Transform from USD, EUR to XMR
 */
-        global $cookie;
         $cart = $this->context->cart;
         
         global $currency;
