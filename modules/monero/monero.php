@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *      Monero Payment Integration with Prestashop
  *      Developed by SerHack
  *      support@monerointegrations.com
