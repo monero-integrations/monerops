@@ -22,8 +22,9 @@ Here there will be:
 	$amount = $this->changeto($total, $c);
 	$actual = $this->retriveprice($c);
 	$address = Configuration::get('MONERO_ADDRESS');
+	 $payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
 	$uri = 'monero:'.$address.'?amount='.$amount.'?payment_id'.$payment_id;
- 	$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));;
+ 	
         $this->context->smarty->assign(array(
             'this_path_ssl'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
 'amount' => $amount,
