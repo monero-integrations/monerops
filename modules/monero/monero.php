@@ -5,6 +5,10 @@
  *      support@monerointegrations.com
  */
 
+<?php
+
+//use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+
 class monero extends PaymentModule{
 
         private $_html = '';
@@ -157,3 +161,4 @@ $this->smarty->assign(
     }
 
 
+}
