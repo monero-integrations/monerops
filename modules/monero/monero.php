@@ -153,6 +153,28 @@ $this->smarty->assign(
         );
         return $this->display(__FILE__, 'payment.tpl');
 }
+	
+	public function hookPaymentOptions($params)
+     {
+         if (!$this->active) {
+             return;
+         }
+ 
+         $payment_options = [
+             $this->linkToMonero(),
+         ];
+                 
+        return $payment_options;
+     }
+     
+     public function linkToMonero()
+    {
+         $monero_option = new PaymentOption();
+         $monero_option->setCallToActionText($this->l('Monero'))
+                      ->setAction(Configuration::get('PS_FO_PROTOCOL').__PS_BASE_URI__."modules/{$this->name}/controllers/front/payment.php");
+ 
+         return $monero_option;
+     }
  
  public function hookHeader()
     {
