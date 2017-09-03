@@ -5,9 +5,9 @@
  *      support@monerointegrations.com
  */
 
-<?php
 
-//use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+// Prestashop 1.7 Compatibility
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class monero extends PaymentModule{
 
