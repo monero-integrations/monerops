@@ -172,7 +172,7 @@ public function hookPaymentOptions($params)
          $monero_option = new PaymentOption();
          $monero_option->setCallToActionText($this->l('Monero'))
 		  ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-                  ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'));
+                  ->setAdditionalInformation($this->context->smarty->fetch('module:monero/views/templates/front/payment_infos.tpl'));
 
  
          return $monero_option;
