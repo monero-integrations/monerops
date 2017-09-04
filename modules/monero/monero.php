@@ -2,12 +2,10 @@
 /**
  *      Monero Payment Integration with Prestashop
  *      Developed by SerHack
+ *	Supported Version : 1.5.x , 1.6.x
  *      support@monerointegrations.com
  */
 
-
-// Prestashop 1.7 Compatibility
-use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class monero extends PaymentModule{
 
@@ -22,7 +20,6 @@ class monero extends PaymentModule{
                 $this->author = 'SerHack';
                 $this->need_instance = 1;
                 $this->bootstrap = true;
-            	        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
                 parent::__construct();
                 
                 $this->displayName = $this->l('Monero Payments');
@@ -154,29 +151,7 @@ $this->smarty->assign(
         return $this->display(__FILE__, 'payment.tpl');
 }
 	
-public function hookPaymentOptions($params)
-     {
-         if (!$this->active) {
-             return;
-         }
- 
-         $payment_options = [
-             $this->linkToMonero(),
-         ];
-                 
-        return $payment_options;
-     }
-     
-     public function linkToMonero()
-    {
-         $monero_option = new PaymentOption();
-         $monero_option->setCallToActionText($this->l('Monero'))
-		  ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-                  ->setAdditionalInformation($this->context->smarty->fetch('module:monero/views/templates/front/payment_infos.tpl'));
 
- 
-         return $monero_option;
-     }
  
  public function hookHeader()
     {
