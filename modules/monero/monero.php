@@ -22,7 +22,7 @@ class monero extends PaymentModule{
                 $this->author = 'SerHack';
                 $this->need_instance = 1;
                 $this->bootstrap = true;
-            
+            	        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
                 parent::__construct();
                 
                 $this->displayName = $this->l('Monero Payments');
@@ -154,7 +154,7 @@ $this->smarty->assign(
         return $this->display(__FILE__, 'payment.tpl');
 }
 	
-	public function hookPaymentOptions($params)
+public function hookPaymentOptions($params)
      {
          if (!$this->active) {
              return;
@@ -171,7 +171,9 @@ $this->smarty->assign(
     {
          $monero_option = new PaymentOption();
          $monero_option->setCallToActionText($this->l('Monero'))
-                      ->setAction(Configuration::get('PS_FO_PROTOCOL').__PS_BASE_URI__."modules/{$this->name}/controllers/front/payment.php");
+		  ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
+                  ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'));
+
  
          return $monero_option;
      }
