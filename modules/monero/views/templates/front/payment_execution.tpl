@@ -1,5 +1,5 @@
 <div class="payment_carrier">
-    {capture name=path}
+   {capture name=path}
         <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='bitcoin'}">
             {l s='Checkout' mod='monero'}
         </a>
@@ -22,21 +22,20 @@
         <div class="row">
             <div class="col-lg-8">
             <div style="border: 1px solid white;">
-            	<p> Please check details </p>
-            	<p> Amount : {$amount} <br>
-            	 Merchant Address : {$address}
-            	
-            	</p>
+            	<h3>Your bill will be {$amount} <b>XMR</b></h3>
+            	<p>If you do not know about monero, visit <a href="https://getmonero.org">getmonero.org</a></p>
             </div>
             	
             	
                 <div>
 
                 <p class='cart_navigation clearfix'>
+				<b>{l s = ' Confirm your order by clicking \'Confirm my order\'.' mod='monero'}</b><br></br>
                     <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='monero'}</a>
 <input value="{$payment_id}" hidden name="payment_id">
 
-                    <input type="submit" value="{l s='Confirm my order' mod='monero'}"  class="button_large" >                 <b>{l s = ' Confirm your order by clicking \'Confirm my order\'.' mod='monero'}</b>
+                  <input type="submit" value="{l s='Confirm my order' mod='monero'}"  class="button_large" >
+                       
                 </p>
 
             </div>
@@ -45,13 +44,5 @@
                 
         </div>
     </form>
-    </div>
+    </div> 
 </div>
-
-
-
-
-
-
-
-
