@@ -62,4 +62,26 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$rounded_amount = round($new_amount, 12); //the moneo wallet can't handle decimals smaller than 0.000000000001
 		return $rounded_amount;
 	}
+	
+	public function verify_payment($payment_id, $amount){
+      /* 
+       * function for verifying payments
+       * Check if a payment has been made with this payment id then notify the merchant
+       */
+       
+      $amount_atomic_units = $amount * 1000000000000;
+      $get_payments_method = $this->monero_daemon->get_payments($payment_id);
+      if(isset($get_payments_method["payments"][0]["amount"]))
+      { 
+		if($get_payments_method["payments"][0]["amount"] >= $amount_atomic_units)
+		{
+			$confirmed = true;
+		}  
+	  }
+	  else
+	  {
+		  $confirmed = false;
+	  }
+	  return $confirmed; 
+  }
 }
