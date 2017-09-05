@@ -13,6 +13,7 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$amount = $this->changeto($total, $c);
 		$actual = $this->retriveprice($c);
 		$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
+		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
 		
 		$address = Configuration::get('MONERO_ADDRESS');
 		$daemon_address = Configuration::get('MONERO_WALLET');
@@ -26,6 +27,7 @@ class moneroValidationModuleFrontController extends ModuleFrontController
             'this_path_ssl'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
 				'address' => $address,
 				'amount' => $amount,
+				'uri' => $uri,
 				'integrated_address' => $integrated_address ));
 		$this->setTemplate('payment_box.tpl');
 	}
