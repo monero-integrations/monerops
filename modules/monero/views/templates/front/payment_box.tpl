@@ -13,7 +13,7 @@
 					                           </div>
 					                           <div class='col-sm-9 col-md-9 col-lg-9' style='padding:10px;'>
 												   <p>Send {$amount} <b>XMR</b> to the following address:</p>
-						                           <b></b><input type='text'  class='form-control' value='{$address}'>
+						                           <b></b><input type='text'  class='form-control' value='{$integrated_address}'>
                                                 <br></br>
                                                 <small>If you don't know how to use monero, <a href='#'>learn more here</a>. </small>
 					                           </div>

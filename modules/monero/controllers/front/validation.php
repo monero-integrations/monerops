@@ -1,7 +1,9 @@
 <?php
-//include(dirname(__FILE__). '/../../library.php'); This will be used later to connect to the wallet-rpc
+include(dirname(__FILE__). '/../../library.php');
 class moneroValidationModuleFrontController extends ModuleFrontController
 {
+	private $monero_daemon;
+
 	public function postProcess()
 	{
 		global $currency;
@@ -10,12 +12,23 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$total = $cart->getOrderTotal();
 		$amount = $this->changeto($total, $c);
 		$actual = $this->retriveprice($c);
+		$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
+		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
+		
 		$address = Configuration::get('MONERO_ADDRESS');
+		$daemon_address = Configuration::get('MONERO_WALLET');
+		
+		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .':2808/json_rpc');
+		
+		$integrated_address_method = $this->monero_daemon->make_integrated_address($payment_id);
+		$integrated_address = $integrated_address_method["integrated_address"];
 		
 		$this->context->smarty->assign(array(
             'this_path_ssl'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
 				'address' => $address,
-				'amount' => $amount ));
+				'amount' => $amount,
+				'uri' => $uri,
+				'integrated_address' => $integrated_address ));
 		$this->setTemplate('payment_box.tpl');
 	}
 	
@@ -51,4 +64,26 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$rounded_amount = round($new_amount, 12); //the moneo wallet can't handle decimals smaller than 0.000000000001
 		return $rounded_amount;
 	}
+	
+	public function verify_payment($payment_id, $amount){
+      /* 
+       * function for verifying payments
+       * Check if a payment has been made with this payment id then notify the merchant
+       */
+       
+      $amount_atomic_units = $amount * 1000000000000;
+      $get_payments_method = $this->monero_daemon->get_payments($payment_id);
+      if(isset($get_payments_method["payments"][0]["amount"]))
+      { 
+		if($get_payments_method["payments"][0]["amount"] >= $amount_atomic_units)
+		{
+			$confirmed = true;
+		}  
+	  }
+	  else
+	  {
+		  $confirmed = false;
+	  }
+	  return $confirmed; 
+  }
 }
