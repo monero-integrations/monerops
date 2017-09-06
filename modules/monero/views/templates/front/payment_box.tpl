@@ -15,7 +15,7 @@
 												   <p>Send {$amount} <b>XMR</b> to the following address:</p>
 						                           <b></b><input type='text'  class='form-control' value='{$integrated_address}'>
                                                 <br></br>
-                                                <small>If you don't know how to use monero, <a href='#'>learn more here</a>. </small>
+                                                <small>If you don't know how to use Monero, <a href='#'>learn more here</a>. </small>
 					                           </div>
 											<div class='col-sm-12 col-md-12 col-lg-12'>
 												
