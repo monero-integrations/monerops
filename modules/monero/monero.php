@@ -2,12 +2,15 @@
 /**
  *      Monero Payment Integration with Prestashop
  *      Developed by SerHack
- *	Supported Version : 1.5.x , 1.6.x
+ *	Supported Version : 1.7
  *      support@monerointegrations.com
  */
 
 
-class monero extends PaymentModule{
+// Prestashop 1.7 Compatibility
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+
+class Monero extends PaymentModule{
 
         private $_html = '';
         private $_postErrors = array();
@@ -20,6 +23,9 @@ class monero extends PaymentModule{
                 $this->author = 'SerHack';
                 $this->need_instance = 1;
                 $this->bootstrap = true;
+                 $this->controllers = array('payment');
+       		 $this->is_eu_compatible = 1;
+            	 $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
                 parent::__construct();
                 
                 $this->displayName = $this->l('Monero Payments');
@@ -41,6 +47,8 @@ class monero extends PaymentModule{
                  or !$this->registerHook('displayPDFInvoice')
                  or !$this->registerHook('invoice')
                  or  !$this->registerHook('header')
+                 or !$this->registerHook('paymentOptions')
+         
           
                 ) {
                 return false;
@@ -151,8 +159,22 @@ $this->smarty->assign(
         return $this->display(__FILE__, 'payment.tpl');
 }
 	
-
+public function hookPaymentOptions($params)
+     {
+         if (!$this->active) {
+             return;
+         }
  
+        $newOption = new PaymentOption();
+        $newOption->setModuleName($this->name)
+                ->setCallToActionText("Monero")
+                ->setAction($this->context->link->getModuleLink($this->name, 'payment', array(), true))
+                ->setAdditionalInformation($this->fetch('module:monero/views/templates/front/payment_infos.tpl'));
+
+        return [$newOption];
+     }
+     
+    
  public function hookHeader()
     {
         $this->context->controller->addJS($this->_path.'/views/js/front.js');
