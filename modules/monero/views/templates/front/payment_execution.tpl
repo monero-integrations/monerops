@@ -23,7 +23,7 @@
             <div class="col-lg-8">
             <div style="border: 1px solid white;">
             	<h3>Your bill will be {$amount} <b>XMR</b></h3>
-            	<p>If you do not know about monero, visit <a href="https://getmonero.org">getmonero.org</a></p>
+            	<p>If you do not know about Monero, visit <a href="https://getmonero.org">getmonero.org</a></p>
             </div>
             	
             	
