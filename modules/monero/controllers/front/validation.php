@@ -12,7 +12,7 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$total = $cart->getOrderTotal();
 		$amount = $this->changeto($total, $c);
 		$actual = $this->retriveprice($c);
-		$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
+		$payment_id  = $this->set_paymentid_cookie();
 		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
 		
 		$address = Configuration::get('MONERO_ADDRESS');
@@ -31,6 +31,17 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 				'integrated_address' => $integrated_address ));
 		$this->setTemplate('payment_box.tpl');
 	}
+	private function set_paymentid_cookie()
+				{
+					if(!isset($_COOKIE['payment_id']))
+					{ 
+						$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
+						setcookie('payment_id', $payment_id, time()+2700);
+					}
+					else
+						$payment_id = $_COOKIE['payment_id'];
+					return $payment_id;
+				}
 	
 	public function retriveprice($c)
 	{
