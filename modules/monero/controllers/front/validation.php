@@ -12,36 +12,27 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$total = $cart->getOrderTotal();
 		$amount = $this->changeto($total, $c);
 		$actual = $this->retriveprice($c);
-		$payment_id  = $this->set_paymentid_cookie();
-		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
-		
-		$address = Configuration::get('MONERO_ADDRESS');
+		$payment_id  = $this->get_paymentid_cookie();
 		$daemon_address = Configuration::get('MONERO_WALLET');
+		$status = "We are waiting for your payment to be confirmed by the Monero network";
 		
-		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .':2808/json_rpc');
-		
-		$integrated_address_method = $this->monero_daemon->make_integrated_address($payment_id);
-		$integrated_address = $integrated_address_method["integrated_address"];
+		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc');
+		if($this->verify_payment($payment_id, $amount))
+		{
+			$status = "Thank you. Your order has been received";
+		}
 		
 		$this->context->smarty->assign(array(
             'this_path_ssl'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
-				'address' => $address,
-				'amount' => $amount,
-				'uri' => $uri,
-				'integrated_address' => $integrated_address ));
+				'status' => $status ));
 		$this->setTemplate('payment_box.tpl');
 	}
-	private function set_paymentid_cookie()
-				{
-					if(!isset($_COOKIE['payment_id']))
-					{ 
-						$payment_id  = bin2hex(openssl_random_pseudo_bytes(8));
-						setcookie('payment_id', $payment_id, time()+2700);
-					}
-					else
-						$payment_id = $_COOKIE['payment_id'];
-					return $payment_id;
-				}
+	
+	private function get_paymentid_cookie()
+	{
+		$payment_id = $_COOKIE['payment_id'];
+		return $payment_id;
+	}
 	
 	public function retriveprice($c)
 	{
@@ -76,12 +67,13 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		return $rounded_amount;
 	}
 	
-	public function verify_payment($payment_id, $amount){
+	public function verify_payment($payment_id, $amount)
+	{
       /* 
        * function for verifying payments
        * Check if a payment has been made with this payment id then notify the merchant
        */
-       
+      
       $amount_atomic_units = $amount * 1000000000000;
       $get_payments_method = $this->monero_daemon->get_payments($payment_id);
       if(isset($get_payments_method["payments"][0]["amount"]))
@@ -95,6 +87,6 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 	  {
 		  $confirmed = false;
 	  }
-	  return $confirmed; 
+	  return $confirmed;
   }
 }
