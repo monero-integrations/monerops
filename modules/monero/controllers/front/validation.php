@@ -14,12 +14,12 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		$actual = $this->retriveprice($c);
 		$payment_id  = $this->get_paymentid_cookie();
 		$daemon_address = Configuration::get('MONERO_WALLET');
-		$status = "We are waiting for your payment to be confirmed by the Monero network";
+		$status = "We are waiting for your payment to be confirmed by the Monero network.";
 		
 		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc');
 		if($this->verify_payment($payment_id, $amount))
 		{
-			$status = "Thank you. Your order has been received";
+			$status = "Thank you. Your order has been received.";
 		}
 		
 		$this->context->smarty->assign(array(
