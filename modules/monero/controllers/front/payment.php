@@ -70,7 +70,7 @@ class MoneroPaymentModuleFrontController extends ModuleFrontController
 	
 	public function retriveprice($c)
 				{
-								$xmr_price = file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR,CAD,INR,GBP');
+								$xmr_price = Tools::file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR,CAD,INR,GBP');
 								$price         = json_decode($xmr_price, TRUE);
 							
 								if ($c == 'USD') {
