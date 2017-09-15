@@ -1,6 +1,6 @@
 <div class="payment_carrier">
    {capture name=path}
-        <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='bitcoin'}">
+        <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}" title="{l s='Go back to the Checkout' mod='monero'}">
             {l s='Checkout' mod='monero'}
         </a>
         <span class="navigation-pipe">{$navigationPipe}</span>
