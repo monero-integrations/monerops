@@ -20,6 +20,7 @@ class moneroValidationModuleFrontController extends ModuleFrontController
 		if($this->verify_payment($payment_id, $amount))
 		{
 			$status = "Thank you. Your order has been received.";
+			//Tools::redirectLink(PS_BASE_URI . 'order-confirmation.php?id_cart=' . $id_cart . '&id;_module=' . intval($this->module->id) . '&id;_order=' . intval($tpg_deposit->currentOrder) . '&key=' . $this->context->customer->secure_key);
 		}
 		
 		$this->context->smarty->assign(array(
