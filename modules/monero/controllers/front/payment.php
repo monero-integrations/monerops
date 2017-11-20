@@ -19,7 +19,7 @@ class moneropaymentModuleFrontController extends ModuleFrontController
 		$amount = $this->changeto($total, $c);
 		$actual = $this->retriveprice($c);
 		$payment_id  = $this->set_paymentid_cookie();
-		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
+		$uri = "monero:$address?tx_amount=$amount?tx_payment_id=$payment_id";
 		$status = "Awaiting Confirmation...";
 		
 		$address = Configuration::get('MONERO_ADDRESS');
