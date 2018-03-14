@@ -14,9 +14,9 @@ This plugin is rather simple but there are a few things that need to be set up b
 Prestashop is open source e-commerce engine to run your own shop and this Monero addon
 
 ## Step 1: Activating the plugin
-* Downloading: First of all, you will need to download the module. You can download the latest release as a .zip file from https://raw.githubusercontent.com/monero-integrations/monerops If you wish, you can also download the latest source code from GitHub. This can be done with the command `git clone https://raw.githubusercontent.com/monero-integrations/monerops.git` or can be downloaded as a zip file from the GitHub web page.
+* Downloading: First of all, you will need to download the module. You can download the latest release as a .zip file from https://github.com/monero-integrations/monerops If you wish, you can also download the latest source code from GitHub. This can be done with the command `git clone https://github.com/monero-integrations/monerops.git` or can be downloaded as a zip file from the GitHub web page.
 
-* Unzip the file monerops-master.zip if you downloaded the zip from the master page [here](https://raw.githubusercontent.com/monero-integrations/monerops).
+* Unzip the file monerops-master.zip if you downloaded the zip from the master page [here](https://github.com/monero-integrations/monerops).
 
 * Upload the module and activate it. You can refer the official documentation [here](https://addons.prestashop.com/en/content/21-how-to)
 
