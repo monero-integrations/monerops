@@ -22,12 +22,12 @@ class moneropaymentModuleFrontController extends ModuleFrontController
 
     $address = Configuration::get('MONERO_ADDRESS');
 		$daemon_address = Configuration::get('MONERO_WALLET');
-    
+
 		$uri = "monero:$address?tx_amount=$amount?tx_payment_id=$payment_id";
 		$status = "Awaiting Confirmation...";
 
 
-		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc'); // example $daemon address 127.0.0.1:18081
+		$this->monero_daemon = new Monero_Library($daemon_address .'/json_rpc',"",""); // example $daemon address 127.0.0.1:18081
 
 		$integrated_address_method = $this->monero_daemon->make_integrated_address($payment_id);
 		$integrated_address = $integrated_address_method["integrated_address"];
