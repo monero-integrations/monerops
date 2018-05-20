@@ -72,7 +72,7 @@ class Monero_Library
    private function request($pMethod, $pParams)
     {
         static $requestId = 0;
-        // generating uniuqe id per process
+        // generating unique id per process
         $requestId++;
         // check if given params are correct
         $this->validate(false === is_scalar($pMethod), 'Method name has no scalar value');
@@ -174,7 +174,7 @@ class Monero_Library
             // performance summary
             $debug .= 'Request time: ' . round($endTime - $startTime, 3) . ' s Memory usage: ' . round(memory_get_usage() / 1024) . " kb\r\n";
             echo nl2br($debug);
-            // send output imidiately
+            // send output immediately
             flush();
             // clean static
             $debug = $startTime = null;
@@ -225,7 +225,7 @@ class Monero_Library
     }
 
     /*
-     * The following functions can all be called to interact with the monero rpc wallet
+     * The following functions can all be called to interact with the Monero RPC wallet
      * They will majority of them will return the result as an array
      * Example: $daemon->address(); where $daemon is an instance of this class, will return the wallet address as string within an array
      */
@@ -270,7 +270,7 @@ class Monero_Library
      }
 
      /* A payment id can be passed as a string
-        A random payment id will be generatd if one is not given */
+        A random payment id will be generated if one is not given */
     public function make_integrated_address($payment_id)
     {
         $integrate_address_parameters = array('payment_id' => $payment_id);
