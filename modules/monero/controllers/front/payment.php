@@ -95,7 +95,7 @@ class moneropaymentModuleFrontController extends ModuleFrontController
 	{
 		$xmr_live_price = $this->retriveprice($currency);
 		$new_amount     = $amount / $xmr_live_price;
-		$rounded_amount = round($new_amount, 12); //the moneo wallet can't handle decimals smaller than 0.000000000001
+		$rounded_amount = round($new_amount, 12); //the Monero wallet can't handle decimals smaller than 0.000000000001
 		return $rounded_amount;
 	}
 
