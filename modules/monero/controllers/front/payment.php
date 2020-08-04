@@ -1,5 +1,6 @@
 <?php
-include(dirname(__FILE__). '/../../library.php');
+include(_PS_MODULE_DIR_.'monero'.DIRECTORY_SEPARATOR.'library.php');
+
 class MoneroPaymentModuleFrontController extends ModuleFrontController
 {
     public $ssl = false;
@@ -33,8 +34,11 @@ class MoneroPaymentModuleFrontController extends ModuleFrontController
 		
 		$daemon_address = Configuration::get('MONERO_WALLET');
 		
+	    	// TODO implement username and password :)
 		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc'); // example $daemon address 127.0.0.1:18081
-		
+		if(!isset($this->monero_daemon)){
+			echo 'We can not find Monero library!';
+		}
 		$integrated_address_method = $this->monero_daemon->make_integrated_address($payment_id);
 		$integrated_address = $integrated_address_method["integrated_address"];
 		
