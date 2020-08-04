@@ -11,8 +11,6 @@ class MoneroPaymentModuleFrontController extends ModuleFrontController
         parent::initContent();
 
         $cart = $this->context->cart;
-       
-        
       
         $currency = $this->context->currency;
         $currency_iso = $currency->iso_code;
@@ -25,24 +23,23 @@ class MoneroPaymentModuleFrontController extends ModuleFrontController
 		$address = Configuration::get('MONERO_ADDRESS');
 		$uri = "monero:$address?amount=$amount?payment_id=$payment_id";
 		$status = "Awaiting Confirmation...";
-		if($this->verify_payment($payment_id, $amount))
-		{
-			$status = "Your Payment has been confirmed! Yay!";
-			// Confirm Cart!
-			
-		}
 		
 		$daemon_address = Configuration::get('MONERO_WALLET');
-		
-	    	// TODO implement username and password :)
-		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc'); // example $daemon address 127.0.0.1:18081
+	    $user = Configuration::get('MONERO_USERNAME');
+	    $password = Configuration::get('MONERO_PASSWORD');
+		$this->monero_daemon = new Monero_Library('http://'. $daemon_address .'/json_rpc', $user, $password); // example $daemon address 127.0.0.1:18081
 		if(!isset($this->monero_daemon)){
 			echo 'We can not find Monero library!';
 		}
+		
 		$integrated_address_method = $this->monero_daemon->make_integrated_address($payment_id);
 		$integrated_address = $integrated_address_method["integrated_address"];
 		
-       
+       if($this->verify_payment($payment_id, $amount))
+		{
+			$status = "Your Payment has been confirmed! Yay!";
+			// Confirm Cart!
+		}
     	
     	$this->context->smarty->assign(
     	array(
