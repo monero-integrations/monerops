@@ -74,35 +74,17 @@ class MoneroPaymentModuleFrontController extends ModuleFrontController
 	
 	public function retriveprice($c)
 				{
-								$xmr_price = Tools::file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR,CAD,INR,GBP');
+								$xmr_price = Tools::file_get_contents('https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms='.$c);
 								$price         = json_decode($xmr_price, TRUE);
-							
-								if ($c == 'USD') {
-												return $price['USD'];
-								}
-								if ($c == 'EUR') {
-												return $price['EUR'];
-								}
-								if ($c == 'CAD'){
-												return $price['CAD'];
-								}
-								if ($c == 'GBP'){
-												return $price['GBP'];
-								}
-								if ($c == 'INR'){
-												return $price['INR'];
-								}
-								else{
-												return $price['USD'];
-								}
-				}
+								return $price[$c];
+	}
 				
 	public function changeto($amount, $currency)
 	{
 		$xmr_live_price = $this->retriveprice($currency);
 		echo $xmr_live_price;
 		$new_amount     = $amount / $xmr_live_price;
-		$rounded_amount = round($new_amount, 12); //the moneo wallet can't handle decimals smaller than 0.000000000001
+		$rounded_amount = round($new_amount, 12); //the monero wallet can't handle decimals smaller than 0.000000000001
 		return $rounded_amount;
 	}
 	
