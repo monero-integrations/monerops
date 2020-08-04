@@ -102,6 +102,18 @@ public function displayForm()
             	'type' => 'text',
             	'label' => $this->l('Monero Wallet RPC IP'),
             	'name' => 'MONERO_WALLET',
+            	'required' => true
+            ),
+            array(
+            	'type' => 'text',
+            	'label' => $this->l('RPC Username'),
+            	'name' => 'MONERO_USERNAME',
+            	'required' => false
+            ),
+            array(
+            	'type' => 'text',
+            	'label' => $this->l('RPC Password'),
+            	'name' => 'MONERO_PASSWORD',
             	'required' => false
             )
         ),
@@ -144,7 +156,9 @@ public function displayForm()
     // Load current value
     $helper->fields_value['MONERO_ADDRESS'] = Configuration::get('MONERO_ADDRESS');
     $helper->fields_value['MONERO_WALLET'] = Configuration::get('MONERO_WALLET');
-     
+         $helper->fields_value['MONERO_USERNAME'] = Configuration::get('MONERO_USERNAME');
+    $helper->fields_value['MONERO_PASSWORD'] = Configuration::get('MONERO_PASSWORD');
+
     return $helper->generateForm($fields_form);
 }
 
@@ -167,7 +181,7 @@ public function hookPaymentOptions($params)
  
         $newOption = new PaymentOption();
         $newOption->setModuleName($this->name)
-                ->setCallToActionText("Monero")
+                ->setCallToActionText("Pay with Monero")
                 ->setAction($this->context->link->getModuleLink($this->name, 'payment', array(), true))
                 ->setAdditionalInformation($this->fetch('module:monero/views/templates/front/payment_infos.tpl'));
 
