@@ -11,14 +11,14 @@
  */
 class Monero_Library
 {
+  
     protected $url = null, $is_debug = false, $parameters_structure = 'array';
     private $username;
     private $password;
     protected $curl_options = array(
-        CURLOPT_CONNECTTIMEOUT => 8,
-        CURLOPT_TIMEOUT => 8
+        CURLOPT_CONNECTTIMEOUT => 12,
+        CURLOPT_TIMEOUT => 12
     );
-
 
     private $httpErrors = array(
         400 => '400 Bad Request',
@@ -35,12 +35,13 @@ class Monero_Library
 
     public function __construct($pUrl, $pUser, $pPass)
     {
+
         $this->validate(false === extension_loaded('curl'), 'The curl extension must be loaded to use this class!');
         $this->validate(false === extension_loaded('json'), 'The json extension must be loaded to use this class!');
 
         $this->url = $pUrl;
-	      $this->username = $pUser;
-	      $this->password = $pPass;
+        $this->username = $pUser;
+        $this->password = $pPass;
     }
 
     private function getHttpErrorMessage($pErrorNumber)
@@ -54,7 +55,7 @@ class Monero_Library
         return $this;
     }
 
-
+    
 
     public function setCurlOptions($pOptionsArray)
     {
@@ -64,23 +65,20 @@ class Monero_Library
         }
         else
         {
-            echo 'Invalid options type.';
+            throw new InvalidArgumentException('Invalid options type.');
         }
         return $this;
     }
 
-   private function request($pMethod, $pParams)
+    public function request($pMethod, $pParams)
     {
-        static $requestId = 0;
-        // generating unique id per process
-        $requestId++;
-        // check if given params are correct
+         // check if given params are correct
         $this->validate(false === is_scalar($pMethod), 'Method name has no scalar value');
-       // $this->validate(false === is_array($pParams), 'Params must be given as array');
+        // $this->validate(false === is_array($pParams), 'Params must be given as array');
         // send params as an object or an array
         //$pParams = ($this->parameters_structure == 'object') ? $pParams[0] : array_values($pParams);
         // Request (method invocation)
-        $request = json_encode(array('jsonrpc' => '2.0', 'method' => $pMethod, 'params' => $pParams, 'id' => $requestId));
+        $request = json_encode(array('jsonrpc' => '2.0', 'method' => $pMethod, 'params' => $pParams));
         // if is_debug mode is true then add url and request to is_debug
         $this->debug('Url: ' . $this->url . "\r\n", false);
         $this->debug('Request: ' . $request . "\r\n", false);
@@ -90,11 +88,9 @@ class Monero_Library
         // decode and create array ( can be object, just set to false )
         $responseDecoded = json_decode($responseMessage, true);
         // check if decoding json generated any errors
-        $jsonErrorMsg = $this->getJsonLastErrorMsg();
-        $this->validate( !is_null($jsonErrorMsg), $jsonErrorMsg . ': ' . $responseMessage);
+        $jsonErrorMsg = json_last_error_msg();
+        $this->validate( !is_null($jsonErrorMsg) && $jsonErrorMsg !== 'No error' , $jsonErrorMsg . ': ' . $responseMessage);
         // check if response is correct
-        $this->validate(empty($responseDecoded['id']), 'Invalid response data structure: ' . $responseMessage);
-        $this->validate($responseDecoded['id'] != $requestId, 'Request id: ' . $requestId . ' is different from Response id: ' . $responseDecoded['id']);
         if (isset($responseDecoded['error']))
         {
             $errorMessage = 'Request have return error: ' . $responseDecoded['error']['message'] . '; ' . "\n" .
@@ -107,6 +103,7 @@ class Monero_Library
         }
         return $responseDecoded['result'];
     }
+
     protected function & getResponse(&$pRequest)
     {
         // do the actual connection
@@ -116,8 +113,8 @@ class Monero_Library
             throw new RuntimeException('Could\'t initialize a cURL session');
         }
         curl_setopt($ch, CURLOPT_URL, $this->url);
-	      //curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
-	      //curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $pRequest);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
@@ -127,7 +124,7 @@ class Monero_Library
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         if ( !curl_setopt_array($ch, $this->curl_options))
         {
-            echo 'Error while setting curl options';
+            throw new RuntimeException('Error while setting curl options');
         }
         // send the request
         $response = curl_exec($ch);
@@ -140,7 +137,7 @@ class Monero_Library
         // check for curl error
         if (0 < curl_errno($ch))
         {
-            echo 'Unable to connect to '.$this->url . ' Error: ' . curl_error($ch);
+            throw new RuntimeException('Unable to connect to '.$this->url . ' Error: ' . curl_error($ch));
         }
         // close the connection
         curl_close($ch);
@@ -181,103 +178,74 @@ class Monero_Library
         }
     }
 
-    function getJsonLastErrorMsg()
-    {
-        if (!function_exists('json_last_error_msg'))
-        {
-            function json_last_error_msg()
-            {
-                static $errors = array(
-                    JSON_ERROR_NONE           => 'No error',
-                    JSON_ERROR_DEPTH          => 'Maximum stack depth exceeded',
-                    JSON_ERROR_STATE_MISMATCH => 'Underflow or the modes mismatch',
-                    JSON_ERROR_CTRL_CHAR      => 'Unexpected control character found',
-                    JSON_ERROR_SYNTAX         => 'Syntax error',
-                    JSON_ERROR_UTF8           => 'Malformed UTF-8 characters, possibly incorrectly encoded'
-                );
-                $error = json_last_error();
-                return array_key_exists($error, $errors) ? $errors[$error] : 'Unknown error (' . $error . ')';
-            }
-        }
-
-        // Fix PHP 5.2 error caused by missing json_last_error function
-        if (function_exists('json_last_error'))
-        {
-            return json_last_error() ? json_last_error_msg() : null;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
+    
 	public function _run($method,$params = null)
 	{
       $result = $this->request($method, $params);
        return $result; //the result is returned as an array
     }
-
+    
     //prints result as json
     public function _print($json)
     {
         $json_encoded = json_encode($json,  JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         echo $json_encoded;
     }
-
-    /*
-     * The following functions can all be called to interact with the Monero RPC wallet
+    
+    /* 
+     * The following functions can all be called to interact with the monero rpc wallet
      * They will majority of them will return the result as an array
      * Example: $daemon->address(); where $daemon is an instance of this class, will return the wallet address as string within an array
      */
-
+    
     public function address()
     {
         $address = $this->_run('getaddress');
         return $address;
     }
-
+    
     public function getbalance()
     {
          $balance = $this->_run('getbalance');
          return $balance;
     }
-
+    
     public function getheight()
     {
          $height = $this->_run('getheight');
          return $height;
     }
-
+    
     public function incoming_transfer($type)
     {
         $incoming_parameters = array('transfer_type' => $type);
         $incoming_transfers = $this->_run('incoming_transfers', $incoming_parameters);
         return $incoming_transfers;
     }
-
+    
 	public function get_transfers($input_type, $input_value)
 	{
         $get_parameters = array($input_type => $input_value);
         $get_transfers = $this->_run('get_transfers', $get_parameters);
         return $get_transfers;
     }
-
+    
     public function view_key()
     {
         $query_key = array('key_type' => 'view_key');
         $query_key_method = $this->_run('query_key', $query_key);
         return $query_key_method;
      }
-
+     
      /* A payment id can be passed as a string
-        A random payment id will be generated if one is not given */
+        A random payment id will be generatd if one is not given */
     public function make_integrated_address($payment_id)
     {
         $integrate_address_parameters = array('payment_id' => $payment_id);
         $integrate_address_method = $this->_run('make_integrated_address', $integrate_address_parameters);
         return $integrate_address_method;
     }
-
+    
     public function split_integrated_address($integrated_address)
     {
         if(!isset($integrated_address)){
@@ -289,24 +257,24 @@ class Monero_Library
 			return $split_methods;
         }
     }
-
+    
     public function make_uri($address, $amount, $recipient_name = null, $description = null)
     {
-        // If I pass 1, it will be 0.0000001 xmr. Then
+        // If I pass 1, it will be 0.0000001 xmr. Then 
         $new_amount = $amount * 100000000;
-
+       
         $uri_params = array('address' => $address, 'amount' => $new_amount, 'payment_id' => '', 'recipient_name' => $recipient_name, 'tx_description' => $description);
         $uri = $this->_run('make_uri', $uri_params);
         return $uri;
     }
-
+    
     public function parse_uri($uri)
     {
         $uri_parameters = array('uri' => $uri);
         $parsed_uri = $this->_run('parse_uri', $uri_parameters);
         return $parsed_uri;
     }
-
+    
     public function transfer($amount, $address, $mixin = 4)
     {
         $new_amount = $amount  * 1000000000000;
@@ -315,18 +283,18 @@ class Monero_Library
         $transfer_method = $this->_run('transfer', $transfer_parameters);
         return $transfer_method;
     }
-
+    
     public function get_payments($payment_id)
     {
 		$get_payments_parameters = array('payment_id' => $payment_id);
 		$get_payments = $this->_run('get_payments', $get_payments_parameters);
 		return $get_payments;
 	}
-
+	
 	public function get_bulk_payments($payment_id, $min_block_height)
 	{
       $get_bulk_payments_parameters = array('payment_id' => $payment_id, 'min_block_height' => $min_block_height);
       $get_bulk_payments = $this->_run('get_bulk_payments', $get_bulk_payments_parameters);
       return $get_bulk_payments;
 	}
-}
+} 
